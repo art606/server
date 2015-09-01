@@ -34,7 +34,8 @@ var servicesSchema = new mongoose.Schema({
 var ticketsSchema = new mongoose.Schema({
     ticketId: Number,
     ticketStatus: String,
-    ticketName: String
+    ticketName: String,
+    ticketNumber: Number
 })
 mongoose.model('Branches', branchesSchema, "branchesSchema");
 mongoose.model('Services', servicesSchema, "servicesSchema");
