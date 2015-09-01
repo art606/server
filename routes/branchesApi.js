@@ -18,6 +18,19 @@ router.get('/branches', function (req, res, next) {
     });
 });
 
+router.get('/branch/:branchId', function (req, res, next) {
+    branch.find({'branchId': req.params.branchId}, function (err, branch) {
+        if (err) {
+            res.status(err.status || 400);
+            res.end(JSON.stringify({error: err.toString()}));
+            return;
+        }
+        res.header("Content-type", "application/json");
+        res.end(JSON.stringify(branch));
+
+    });
+});
+
 router.get('/branches/services/:branchId', function (req, res, next) {
     console.log(req.params.branchId);
     service.find({'branchId': req.params.branchId}, function (err, branch) {
