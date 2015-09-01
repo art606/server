@@ -88,10 +88,10 @@ router.post('/create/branch', function (req, res) {
     });
 })
 
-router.post('/create/ticket', function(req, res){
+router.post('/ticket/create', function(req, res){
     var data = req.body;
     console.log(data);
-    ticket.create({ticketStatus: data.ticketStatus}, function(err, newTicket){
+    ticket.create({ticketStatus: data.ticketStatus, ticketName: data.ticketName}, function(err, newTicket){
         if(err){
             res.status(err.status || 400);
             res.end(JSON.stringify({error: err.toString()}))
@@ -127,7 +127,7 @@ router.get('/ticket/:_id', function(req, res){
     })
 })
 
-router.delete('/delete/ticket/:_id', function(req, res){
+router.delete('/ticket/delete/:_id', function(req, res){
     var id = req.params._id;
     console.log(id)
     ticket.remove({'_id': id},function(err, ticket){
@@ -141,15 +141,16 @@ router.delete('/delete/ticket/:_id', function(req, res){
     })
 })
 
-router.put('/ticket/:_id', function(req, res){
-    var data = req.body;
-    var ticketToUpdate = req.body._id;
-    ticket.findOneAndUpdate({'_id': ticketToUpdate}, data, function(err, result){
+router.put('/ticket/status/:_id', function(req, res){
+    var data = req.body; //{"ticketStatus": 'Handling'};
+    var ticketToUpdate = req.params._id;
+    ticket.findOneAndUpdate({'_id': ticketToUpdate}, data , function(err, result){
         if (err) {
             res.status(err.status || 400);
             res.end(JSON.stringify({error: err.toString()}));
             return;
         }
+        console.log(result.ticketStatus)
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(result));
     })
