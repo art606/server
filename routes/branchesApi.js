@@ -102,10 +102,8 @@ router.post('/create/branch', function (req, res) {
 })
 
 router.post('/ticket/create', function(req, res){
-
     ticket.findOne({}, {}, { sort: { 'ticketNumber' : -1 }}, function(err, latestTicket) {
     var data = req.body;
-
     var ticketNumb = latestTicket.ticketNumber;
         ticketNumb++;
     ticket.create({ticketStatus: "Awaiting", ticketName: "A", ticketNumber: ticketNumb}, function(err, newTicket){
