@@ -8,7 +8,9 @@ var db = require("./model/db");
 var dbObject = require("./model/BranchesObject");
 
 var routes = require('./routes/index');
-var branches = require('./routes/branchesApi');
+var branches = require('./routes/branchesRoute');
+var services = require('./routes/servicesRoute');
+var tickets = require('./routes/ticketsRoute');
 var app = express();
 
 // view engine setup
@@ -24,7 +26,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/branchesApi', branches);
+app.use('/branchesRoute', branches);
+app.use('/servicesRoute', services);
+app.use('/ticketsRoute', tickets);
 
 
 // catch 404 and forward to error handler

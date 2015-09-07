@@ -27,12 +27,14 @@ var branchesSchema = new mongoose.Schema({
 
 var servicesSchema = new mongoose.Schema({
     branchId: Number,
+    serviceId: Number,
     serviceName: String,
     peopleInQue: Number
 })
 
 var ticketsSchema = new mongoose.Schema({
-    ticketId: Number,
+    branchId: Number,
+    serviceId: Number,
     ticketStatus: String,
     ticketName: String,
     ticketNumber: Number
