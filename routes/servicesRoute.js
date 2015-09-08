@@ -27,7 +27,7 @@ router.get('/branch/:branchId/service/:serviceId', function (req, res, next) {
     console.log(request)
     console.log(idBranchString)
     console.log(idServiceString)
-    service.find({$and: [{'branchId': idBranchString}, {'_id': idServiceString}]}, function (err, service) {
+    service.find({$and: [{'branchId': idBranchString}, {'serviceId': idServiceString}]}, function (err, service) {
         if (err) {
             res.status(err.status || 400);
             res.end(JSON.stringify({error: err.toString()}));
