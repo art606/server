@@ -28,7 +28,7 @@ router.get('/branch/:branchId', function (req, res, next) {
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(branch));
 
-    });
+    })
 });
 
 router.post('/create/branch', function (req, res) {
@@ -65,7 +65,5 @@ router.post('/create/branch', function (req, res) {
             res.end(JSON.stringify(result));
         });
     });
-})
-
-
+});
 module.exports = router;

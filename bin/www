@@ -6,7 +6,10 @@
 
 var app = require('../app');
 var debug = require('debug')('untitled:server');
-var http = require('http');
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+server.listen(3000);
 
 /**
  * Get port from environment and store in Express.
@@ -19,7 +22,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+
 
 /**
  * Listen on provided port, on all network interfaces.

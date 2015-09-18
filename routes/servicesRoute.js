@@ -20,7 +20,6 @@ router.get('/branch/services/:branchId', function (req, res, next) {
 });
 
 router.get('/branch/:branchId/service/:serviceId', function (req, res, next) {
-
     var idBranchString = req.params.branchId;
     var idServiceString = req.params.serviceId;
     var request = req.params;
@@ -38,5 +37,4 @@ router.get('/branch/:branchId/service/:serviceId', function (req, res, next) {
         res.end(JSON.stringify(service));
     })
 });
-
 module.exports = router;

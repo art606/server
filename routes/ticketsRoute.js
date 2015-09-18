@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var branch = mongoose.model('Branches');
 var service = mongoose.model('Services');
-var ticket = mongoose.model('Tickets');
+var ticket = mongoose.model('Tickets');data =
 
 router.post('/ticket/create', function(req, res){
     var data = req.body;
@@ -27,7 +27,7 @@ router.post('/ticket/create', function(req, res){
             res.end(JSON.stringify(newTicket));
         })
     });
-})
+});
 
 router.get('/tickets', function(req, res){
     ticket.find({}, function(err, tickets){
@@ -39,7 +39,7 @@ router.get('/tickets', function(req, res){
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(tickets));
     })
-})
+});
 
 router.get('/ticket/:_id', function(req, res){
     var id = req.params._id;
@@ -52,7 +52,7 @@ router.get('/ticket/:_id', function(req, res){
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(ticket));
     })
-})
+});
 
 router.delete('/ticket/delete/:_id', function(req, res){
     var id = req.params._id;
@@ -66,7 +66,7 @@ router.delete('/ticket/delete/:_id', function(req, res){
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(ticket));
     })
-})
+});
 
 router.put('/ticket/status/:_id', function(req, res){
     var data = req.body; //{"ticketStatus": 'Handling'};
@@ -81,5 +81,5 @@ router.put('/ticket/status/:_id', function(req, res){
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(result));
     })
-})
+});
 module.exports = router;
