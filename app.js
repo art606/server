@@ -5,13 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var db = require("./model/db");
-var dbObject = require("./model/BranchesObject");
+
 
 var routes = require('./routes/index');
 var branches = require('./routes/branchesRoute');
 var services = require('./routes/servicesRoute');
 var tickets = require('./routes/ticketsRoute');
-var sockets = require('./routes/sockets')
+
 var app = express();
 
 // view engine setup
@@ -30,7 +30,7 @@ app.use('/', routes);
 app.use('/branchesRoute', branches);
 app.use('/servicesRoute', services);
 app.use('/ticketsRoute', tickets);
-app.use('/sockets', sockets);
+
 
 
 // catch 404 and forward to error handler

@@ -7,10 +7,10 @@
 var app = require('../app');
 var debug = require('debug')('untitled:server');
 var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+var ws = require('./../handlers/WSHandler');
 
 server.listen(3000);
-
+ws.init(server);
 /**
  * Get port from environment and store in Express.
  */
@@ -18,9 +18,6 @@ server.listen(3000);
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
 
 
 

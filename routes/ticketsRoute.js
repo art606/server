@@ -16,7 +16,7 @@ router.post('/ticket/create', function(req, res){
         ticketNumb++;
         console.log('here2')
         ticket.create({ 'branchId': idBranch, 'serviceId': idService,
-            'ticketStatus': "Awaiting", 'ticketName': "A", 'ticketNumber': ticketNumb}, function(err, newTicket){
+            'ticketStatus': "WAITING", 'ticketName': "A", 'ticketNumber': ticketNumb}, function(err, newTicket){
             if(err){
                 res.status(err.status || 400);
                 res.end(JSON.stringify({error: err.toString()}))
