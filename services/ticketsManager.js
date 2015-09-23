@@ -12,7 +12,7 @@ var ticketsSchema = new mongoose.Schema({
     ticketName: String,
     ticketNumber: Number
 })
-
+var x;
 //mongoose.model('Tickets', ticketsSchema, "ticketsSchema");
 var ticketModel  = mongoose.model('Tickets');
 var ticketsManager = {

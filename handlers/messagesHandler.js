@@ -5,8 +5,7 @@ var ticketsHandler = require('./../handlers/ticketsHandler');
 
 module.exports = {
 
-    handleMessage : function (message, clientId) {
-        console.log("WSHandler.messageHandler")
+    handleMessage : function (message, clientId){
         console.log(message)
         console.log("WSHandler.messageHandler operation: "+message.operation)
         switch (message.operation) {
