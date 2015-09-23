@@ -36,7 +36,7 @@ var ticketsHandler ={
 function _changeTicketStatus(ticketId, clientId, status) {
     console.log("_changeTicketStatus", ticketId);
     var ticketFromDB = ticketsManager.getByOrigId(ticketId, function(storedTicket){
-        if (storedTicket === undefined){
+        if (storedTicket === undefined || storedTicket === null){
             console.log("Ticket for origId="+ticketId+" not Found");
             return;
         }
