@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var branch = mongoose.model('Branches');
 var service = mongoose.model('Services');
-var ticket = mongoose.model('Tickets');data =
+var ticket = mongoose.model('Tickets');
 
 router.post('/ticket/create', function(req, res){
     var data = req.body;

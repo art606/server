@@ -1,7 +1,7 @@
 /**
  * Created by ArturK on 2015-09-18.
  */
-var ticketsHandler = require('./../handlers/ticketsHandler');
+var ticketsHandler = require('./../handlers/TicketsHandler');
 
 module.exports = {
 
