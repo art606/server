@@ -5,7 +5,9 @@ var messagesHandler = require("./../handlers/messagesHandler")
 var WebSocketServer = require('ws').Server
 var connections = [];
 var connectionIDCounter = 1;
+module.exports = {data : 1};
 module.exports.init = function (server) {
+
     wss = new WebSocketServer({server: server, path: '/sockets/'});
     wss.on('connection', function (ws) {
         // Store a reference to the connection using an incrementing ID

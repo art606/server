@@ -8,22 +8,38 @@ var ticketsHandler = {
     ticketWatchers: new Array(),
 
     registerTicketWatch: function (ticket, clientId) {
+        console.log("registerTicketWatch ",ticket);
         var idOfTheClient = clientId;
-        ticketsManager.get(ticket._id, function (storedTicket) {
-            if (storedTicket === undefined) {
-                throw "Ticket " + ticket._id + " not Found";
+        ticketsManager.get(ticket._id, function (err,storedTicket) {
+            if (storedTicket === undefined || storedTicket === null) {
+                throw "Ticket  not Found", ticket;
             }
-            ticketsHandler.notifyTicketWatchers(storedTicket, clientId);
-            ticketsHandler.ticketWatchers.push({ticketId: storedTicket._id, clientId: clientId});
 
+            ticketsHandler.ticketWatchers.push({origId: storedTicket.origId, clientId: clientId});
+            console.log("XXXXX",clientId);
+
+            console.log("before changeTicektStatus")
             setTimeout(_changeTicketStatus, 5000, storedTicket.origId, storedTicket.branchOrigId, 'CALLED');
             setTimeout(_changeTicketStatus, 10000, storedTicket.origId,storedTicket.branchOrigId, 'CLOSED');
         });
-
+    },
+    getClientId : function(origId){
+        console.log("getClientId, ", origId)
+        for (var i=0;i<ticketsHandler.ticketWatchers.length;i++){
+            if (ticketsHandler.ticketWatchers[i].origId === origId)
+                console.log("getClietnId if), ", ticketsHandler.ticketWatchers[i].clientId)
+            return ticketsHandler.ticketWatchers[i].clientId;
+        }
+        return null;
     },
     notifyTicketWatchers: function (ticket) {
-        var clientId = ticketsHandler.ticketWatchers[ticket._id];
+        var i = ticket.origId;
+        console.log("NOTIFYtICKETwATCHERS: orig", i)
+        var clientId = ticketsHandler.getClientId(i);
+        console.log("notify ticket watchers", clientId)
+
         WSHandler.send("TICKET_UPDATED", ticket, clientId);
+        console.log("after send to clienmt")
     },
     cancelTicketWatch: function (ticket, clientId) {
         var idOfTheClient = clientId;
@@ -41,18 +57,26 @@ var ticketsHandler = {
 
     },
     onTicketUpdate: function (origTicket) {
-        var ticketFromDB = ticketsManager.getByOrigId(origTicket.branchId, origTicket.ticketId, function (storedTicket) {
+        console.log("in onTicketUpdate, parameter:  ", origTicket)
+        var ticketFromDB = ticketsManager.getByOrigId(origTicket.branchOrigId, origTicket.origId, function (err, storedTicket) {
+            console.log("KURWA MAC: ", storedTicket)
+            console.log("lol", err)
             if (storedTicket === undefined || storedTicket === null) {
-                ticketsManager.store(origTicket, function (result) {
-                    console.log("onTicketUpdate new Ticket stored ", result);
+                console.log("storedTicket:", storedTicket)
+                ticketsManager.store(storedTicket, function (result) {
+                    console.log("in onTicketUpdate, after getByOrigID, storedTicket: ", result)
+                    storedTicket.status = origTicket.status;
+                    console.log(result)
+                    ticketsHandler.notifyTicketWatchers(storedTicket);
                 });
-            }else{
+            } else{
                 ticketsManager.store(storedTicket, function (result) {
                     storedTicket.status = origTicket.status;
                     console.log("onTicketUpdate old Ticket update: ", result);
-                    ticketsHandler.notifyTicketWatchers(storedTicket, clientId);
+                    ticketsHandler.notifyTicketWatchers(storedTicket);
                 });
             }
+
         })
     }
 }
@@ -60,11 +84,12 @@ var ticketsHandler = {
 /*
  * Tymczasowa metoda do czasu podlaczenia do serwera
  * */
-function _changeTicketStatus(ticketId, branchId, status) {
+function _changeTicketStatus(origId, branchId, status) {
+    console.log("in ChangeTicketStatus: ", origId, branchId, status)
    ticketsHandler.onTicketUpdate(
        {
-           ticketId :ticketId,
-           branchId: branchId,
+           origId : origId,
+           branchOrigId: branchId,
            status : status
        }
    );
@@ -94,5 +119,4 @@ function _generateNewTicket(service, params, callback) {
     });
 
 }
-
 module.exports = ticketsHandler;

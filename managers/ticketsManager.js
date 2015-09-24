@@ -18,18 +18,31 @@ var schema = new mongoose.Schema({
 var model  = mongoose.model('Ticket', schema, 'tickets' );
 var manager = {
     get : function(id, callback){
-        model.findOne({'_id': id}, callback)
+        console.log("manager get ", typeof (id));
+        model.findOne({'_id': id},function(err, data){
+            console.log('err',err);
+            console.log('data',data);
+            callback(err,data)
+        })
     },
     getAll : function(serviceId,callback ){
         model.find({'serviceId': serviceId}, callback);
     },
-    getByOrigId : function(branchId, origId, callback){
-        model.findOne({'branchId': branchId,'origId': origId}, callback)
+    getByOrigId : function(branchOrigId, origId, callback){
+        console.log("branch", branchOrigId, "orig:", origId)
+        model.findOne({branchOrigId: branchOrigId, origId: origId},function(err, data){
+          //  console.log('err',err);
+          //  console.log('data',data);
+            callback(err,data)
+        })
     },
     store : function(ticket, callback){
-        if (ticket._id !== undefined){
-            model.findOneAndUpdate({'_id': ticket._id}, {new: true}, ticket, callback);
+        console.log("ticketsManager, ticekt: ", ticket)
+        if (ticket.origId !== undefined){
+            console.log("ticketsManager, in store, update, ticket: ", ticket )
+            model.findOneAndUpdate({'branchId':ticket.branchId, 'origId': ticket.origId}, {new: true}, ticket, callback);
         }else{
+            console.log("ticketsManager, in store, new, ticket: ", ticket)
             model.create(ticket, callback);
         }
     },
