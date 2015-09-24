@@ -5,15 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var db = require("./model/db");
-
+var initManager= require('./managers/initManager');
 
 var routes = require('./routes/index');
-var branches = require('./routes/branchesRoute');
-var services = require('./routes/servicesRoute');
-var tickets = require('./routes/ticketsRoute');
+var branchesRoute = require('./rest/branches');
+var servicesRoute = require('./rest/services');
+var ticketsRoute = require('./rest/tickets');
 
 var app = express();
-
+//initManager.dropDatabase();
+//initManager.initDatabase();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -27,9 +28,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/branchesRoute', branches);
-app.use('/servicesRoute', services);
-app.use('/ticketsRoute', tickets);
+app.use('/rest', branchesRoute);
+app.use('/rest', servicesRoute);
+app.use('/rest', ticketsRoute);
 
 
 

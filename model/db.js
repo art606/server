@@ -18,27 +18,3 @@ process.on('SIGINT', function () {
         process.exit(0);
     });
 });
-
-var branchesSchema = new mongoose.Schema({
-    branchId: Number,
-    branchName: String,
-    description: String
-});
-
-var servicesSchema = new mongoose.Schema({
-    branchId: Number,
-    serviceId: Number,
-    serviceName: String,
-    peopleInQue: Number
-})
-
-var ticketsSchema = new mongoose.Schema({
-    branchId: Number,
-    serviceId: Number,
-    ticketStatus: String,
-    ticketName: String,
-    ticketNumber: Number
-})
-mongoose.model('Branches', branchesSchema, "branchesSchema");
-mongoose.model('Services', servicesSchema, "servicesSchema");
-mongoose.model('Tickets', ticketsSchema, "ticketsSchema");
