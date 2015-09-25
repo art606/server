@@ -11,6 +11,8 @@ module.exports = (function(){
             switch (operation) {
                 case 'WATCH_TICKET':
                     require("./../handlers/ticketsHandler").registerTicketWatch(data, clientId);
+
+
                     break;
                 case 'CANCEL_WATCH_TICKET':
                     require("./../handlers/ticketsHandler").cancelTicketWatch(data, clientId);

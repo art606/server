@@ -1,5 +1,6 @@
 var WSHandler = require("./../handlers/WSHandler")
 var ticketsManager = require("./../managers/ticketsManager")
+var _ = require("lodash");
 /**
  * Created by ArturK on 2015-09-18.
  */
@@ -9,6 +10,7 @@ var ticketsHandler = {
 
     registerTicketWatch: function (ticket, clientId) {
         console.log("registerTicketWatch ",ticket);
+        console.log("ticketsHandler, registerTicketWatch, clientID ", clientId)
         var idOfTheClient = clientId;
         ticketsManager.get(ticket._id, function (err,storedTicket) {
             if (storedTicket === undefined || storedTicket === null) {
@@ -17,50 +19,58 @@ var ticketsHandler = {
 
             ticketsHandler.ticketWatchers.push({origId: storedTicket.origId, clientId: clientId});
             console.log("XXXXX",clientId);
-
+            ticketsHandler.notifyTicketWatchers(storedTicket);
             console.log("before changeTicektStatus")
             setTimeout(_changeTicketStatus, 5000, storedTicket.origId, storedTicket.branchOrigId, 'CALLED');
             setTimeout(_changeTicketStatus, 10000, storedTicket.origId,storedTicket.branchOrigId, 'CLOSED');
         });
     },
     getClientId : function(origId){
-        console.log("getClientId, ", origId)
+        console.log("getClient For ticket with origId, ", origId)
         for (var i=0;i<ticketsHandler.ticketWatchers.length;i++){
-            if (ticketsHandler.ticketWatchers[i].origId === origId)
-                console.log("getClietnId if), ", ticketsHandler.ticketWatchers[i].clientId)
-            return ticketsHandler.ticketWatchers[i].clientId;
+            if (ticketsHandler.ticketWatchers[i].origId === origId) {
+                console.log("getClietnId, ", ticketsHandler.ticketWatchers[i].clientId)
+                return ticketsHandler.ticketWatchers[i].clientId;
+            }
         }
         return null;
     },
     notifyTicketWatchers: function (ticket) {
+
+        console.log("notifyTicketWatchers: for ticket ", ticket.letter + ticket.number)
         var i = ticket.origId;
-        console.log("NOTIFYtICKETwATCHERS: orig", i)
+
         var clientId = ticketsHandler.getClientId(i);
-        console.log("notify ticket watchers", clientId)
+        console.log("notify ticket watchers id=", clientId)
 
         WSHandler.send("TICKET_UPDATED", ticket, clientId);
         console.log("after send to clienmt")
     },
     cancelTicketWatch: function (ticket, clientId) {
         var idOfTheClient = clientId;
+        ticketsHandler.ticketWatchers = _.remove(ticketsHandler.ticketWatchers, function (watcher){
+            return watcher.clientId === clientId;
+        });
         ticketsManager.delete(ticket, function () {
             WSHandler.disconnectClient(clientId);
         });
 
     },
     printTicket: function (service, params, callback) {
-        // W przysz³osci Po³¹cz do OAS
+        // W przyszï¿½osci Poï¿½ï¿½cz do OAS
         _generateNewTicket(service, params, function (err, ticket) {
             console.log(ticket);
-            ticketsManager.store(ticket, callback);
+            ticketsManager.store(ticket, function(err, data){
+                console.log("err after _store new ticket", err);
+                console.log("data after _store new ticket", data);
+                callback(err, data);
+            });
         })
 
     },
     onTicketUpdate: function (origTicket) {
         console.log("in onTicketUpdate, parameter:  ", origTicket)
         var ticketFromDB = ticketsManager.getByOrigId(origTicket.branchOrigId, origTicket.origId, function (err, storedTicket) {
-            console.log("KURWA MAC: ", storedTicket)
-            console.log("lol", err)
             if (storedTicket === undefined || storedTicket === null) {
                 console.log("storedTicket:", storedTicket)
                 ticketsManager.store(storedTicket, function (result) {

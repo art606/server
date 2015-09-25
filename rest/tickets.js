@@ -21,6 +21,7 @@ router.post('/branches/:branchId/services/:serviceId/printTicket', function(req,
                 res.end(JSON.stringify({error: err.toString()}))
                 return;
             }
+            console.log("PrintTicket return", ticket)
             res.header("Content-type", "application/json");
             res.end(JSON.stringify(ticket));
         })
