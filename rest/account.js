@@ -30,7 +30,6 @@ router.get("/getUser/:_id", function (req, res) {
             res.end(JSON.stringify("User with given id does not exist."));
             return;
         }
-        console.log("in acc manager, getUser, after db", user)
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(user));
     })
@@ -51,7 +50,7 @@ router.put("/updateAccount/:username", function (req, res) {
                 return;
             }
 
-            if (account.username == result.username){
+            if (account.username == result.username) {
                 res.end(JSON.stringify("New username has to be different from the old one."))
                 return;
             }

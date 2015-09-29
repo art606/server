@@ -32,6 +32,7 @@ var manager = {
     updateAccount: function(username, account, callback){
        model.findOneAndUpdate({'username': username }, account, {new: true}, callback);
     },
+
     changePassword: function(username, newpassword, callback){
         model.findOneAndUpdate({'username': username},{'password': newpassword}, {new: true}, callback);
     }
