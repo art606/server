@@ -13,7 +13,6 @@ router.post('/branches/:branchId/services/:serviceId/printTicket', function(req,
 
             return;
         }
-        //Us³uga jest prawid³owa
         var params = req.body;
         TicketsHandler.printTicket(service, params, function (err, ticket){
             if(err){

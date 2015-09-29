@@ -11,6 +11,7 @@ var routes = require('./routes/index');
 var branchesRoute = require('./rest/branches');
 var servicesRoute = require('./rest/services');
 var ticketsRoute = require('./rest/tickets');
+var account = require('./rest/account');
 
 var app = express();
 //initManager.dropDatabase();
@@ -31,6 +32,7 @@ app.use('/', routes);
 app.use('/rest', branchesRoute);
 app.use('/rest', servicesRoute);
 app.use('/rest', ticketsRoute);
+app.use('/rest', account);
 
 
 

@@ -10,7 +10,7 @@ router.get('/branches', function (req, res) {
             res.end(JSON.stringify({error: err.toString()}));
             return;
         }
-        res.header("Content-type", "application/json");
+        res.header("Content-type", "application/json",  "Access-Control-Allow-Origin");
         res.end(JSON.stringify(branches));
     });
 });
