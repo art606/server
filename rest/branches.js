@@ -10,7 +10,7 @@ router.get('/branches', function (req, res) {
             res.end(JSON.stringify({error: err.toString()}));
             return;
         }
-        res.header("Content-type", "application/json",  "Access-Control-Allow-Origin");
+        res.header("Content-type", "application/json");
         res.end(JSON.stringify(branches));
     });
 });
@@ -35,7 +35,7 @@ router.get('/wsclients', function (req,res){
             array.push("----clientId : "+ client.clientId);
         })
     }else{
-        rray.push("no server");
+        array.push("no server");
     }
     res.header("Content-type", "application/json");
     res.end(JSON.stringify(array));

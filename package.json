@@ -13,6 +13,11 @@
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
-    "lodash" : "*"
+    "lodash" : "*",
+    "password-hash": "*"
+  },
+  "devDependencies" :{
+    "mocha" : "2.3.3",
+    "chai" : "3.3.0"
   }
 }

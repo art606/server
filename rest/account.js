@@ -2,7 +2,19 @@ var express = require('express');
 var router = express.Router();
 var accountManager = require('./../managers/accountManager');
 
-router.post("/createAccount", function (req, res) {
+router.get("/account/:username", function (req, res) {
+    accountManager.getAccount(req.params.username, function (err, user) {
+        if (err) {
+            res.status(400);
+            res.end(JSON.stringify("Failed to find account for username."));
+            return;
+        }
+        res.header("Content-type", "application/json");
+        res.end(JSON.stringify(user));
+    })
+})
+router.post("/account", function (req, res) {
+
     accountManager.createAccount(req.body, function (err, account) {
         if (err) {
             res.status(err.status || 400);
@@ -12,21 +24,26 @@ router.post("/createAccount", function (req, res) {
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(account));
     })
-});
 
-router.get("/checkCredentials/:username/:password", function (req, res) {
-    accountManager.checkCredentials(req.params.username, req.params.password, function (err, credentials) {
-        if (err) {
-            res.end(JSON.stringify("Wrong username or password."));
-        }
+})
+router.post("/isUsernameAvailable", function (req, res) {
+    accountManager.isUsernameAvailable(req.body.username, function (isAvailable) {
         res.header("Content-type", "application/json");
-        res.end(JSON.stringify(credentials));
+        res.end(JSON.stringify({username: req.body.username, available: isAvailable}));
+    })
+});
+router.post("/checkCredentials", function (req, res) {
+    accountManager.checkCredentials(req.body.username, req.body.password, function (result) {
+
+        res.header("Content-type", "application/json");
+        res.end(JSON.stringify(result));
     })
 });
 
-router.get("/getUser/:_id", function (req, res) {
-    accountManager.getUserById(req.params._id, function (err, user) {
+router.get("/user/:username", function (req, res) {
+    accountManager.getUserByUsername(req.params.username, function (err, user) {
         if (err) {
+            res.status(400);
             res.end(JSON.stringify("User with given id does not exist."));
             return;
         }
@@ -35,40 +52,54 @@ router.get("/getUser/:_id", function (req, res) {
     })
 })
 
-router.put("/updateAccount/:username", function (req, res) {
-    accountManager.updateAccount(req.body.username, req.body, function (err, account) {
+router.put("/account/:username", function (req, res) {
+    accountManager.updateAccount(req.params.username, req.body.account, function (err, account) {
         if (err) {
             res.status(err.status || 400);
             res.end(JSON.stringify({error: err.toString()}));
             return;
         }
-        //check if a new user name is the same as the old one
-        accountManager.findUserByUserName(account.username, function (err, result) {
-            if (err) {
-                res.status(err.status || 400);
-                res.end(JSON.stringify({error: err.toString()}));
-                return;
-            }
+        return account;
+        /*
+         //check if a new user name is the same as the old one
+         accountManager.findUserByUserName(account.username, function (err, result) {
+         if (err) {
+         res.status(err.status || 400);
+         res.end(JSON.stringify({error: err.toString()}));
+         return;
+         }
 
-            if (account.username == result.username) {
-                res.end(JSON.stringify("New username has to be different from the old one."))
-                return;
-            }
+         if (account.username == result.username) {
+         res.status(400);
+         res.end(JSON.stringify("New username has to be different from the old one."))
+         return;
+         }
 
-            res.header("Content-type", "application/json");
-            res.end(JSON.stringify(account));
-        })
+         res.header("Content-type", "application/json");
+         res.end(JSON.stringify(account));
+         })*/
 
     })
 });
 
-router.put("/changePassword/:username/:newPassword/:newPasswordConfrm", function (req, res) {
-    if (req.params.newPassword != req.params.newPasswordConfrm) {
+router.put("/changePassword", function (req, res) {
+    if (req.body.newPassword != req.body.newPasswordConfrm) {
+        res.status(400);
         res.end(JSON.stringify("Passwords are not equal."));
         return;
     }
+    if (req.body.oldPassword == undefined) {
+        res.status(400);
+        res.end(JSON.stringify("Old password must be filled."));
+        return;
+    }
+    if (req.body.oldPassword == req.body.newPassword) {
+        res.status(400);
+        res.end(JSON.stringify("New password must be different than the old one."));
+        return;
+    }
     else {
-        accountManager.changePassword(req.params.username, req.params.newPassword, function (err, result) {
+        accountManager.changePassword(req.body.username, req.body.oldPassword, req.body.newPassword, function (err, result) {
             if (err) {
                 res.status(err.status || 400);
                 res.end(JSON.stringify({error: err.toString()}));
@@ -78,7 +109,5 @@ router.put("/changePassword/:username/:newPassword/:newPasswordConfrm", function
             res.end(JSON.stringify(result));
         })
     }
-
 })
 module.exports = router
-
