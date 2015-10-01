@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var accountManager = require('./../managers/accountManager');
 
-router.get("/account/:username", function (req, res) {
+router.get("/account/:emailAddress", function (req, res) {
     accountManager.getAccount(req.params.username, function (err, user) {
         if (err) {
             res.status(400);
@@ -26,22 +26,23 @@ router.post("/account", function (req, res) {
     })
 
 })
-router.post("/isUsernameAvailable", function (req, res) {
-    accountManager.isUsernameAvailable(req.body.username, function (isAvailable) {
+router.post("/isEmailAvailable", function (req, res) {
+
+    accountManager.isEmailAddressAvailable(req.body.emailAddress, function (isAvailable) {
         res.header("Content-type", "application/json");
-        res.end(JSON.stringify({username: req.body.username, available: isAvailable}));
+        res.end(JSON.stringify({emailAddress: req.body.emailAddress, available: isAvailable}));
     })
 });
 router.post("/checkCredentials", function (req, res) {
-    accountManager.checkCredentials(req.body.username, req.body.password, function (result) {
+    accountManager.checkCredentials(req.body.emailAddress, req.body.password, function (result) {
 
         res.header("Content-type", "application/json");
         res.end(JSON.stringify(result));
     })
 });
 
-router.get("/user/:username", function (req, res) {
-    accountManager.getUserByUsername(req.params.username, function (err, user) {
+router.get("/user/:emailAddress", function (req, res) {
+    accountManager.getUserByUsername(req.params.emailAddress, function (err, user) {
         if (err) {
             res.status(400);
             res.end(JSON.stringify("User with given id does not exist."));
@@ -52,8 +53,8 @@ router.get("/user/:username", function (req, res) {
     })
 })
 
-router.put("/account/:username", function (req, res) {
-    accountManager.updateAccount(req.params.username, req.body.account, function (err, account) {
+router.put("/account/:emailAddress", function (req, res) {
+    accountManager.updateAccount(req.params.emailAddress, req.body.account, function (err, account) {
         if (err) {
             res.status(err.status || 400);
             res.end(JSON.stringify({error: err.toString()}));
@@ -99,7 +100,7 @@ router.put("/changePassword", function (req, res) {
         return;
     }
     else {
-        accountManager.changePassword(req.body.username, req.body.oldPassword, req.body.newPassword, function (err, result) {
+        accountManager.changePassword(req.body.emailAddress, req.body.oldPassword, req.body.newPassword, function (err, result) {
             if (err) {
                 res.status(err.status || 400);
                 res.end(JSON.stringify({error: err.toString()}));

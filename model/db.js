@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dbURI = 'mongodb://art606:Polymorphysm1@ds035623.mongolab.com:35623/ionicapp';
+var dbURI = 'mongodb://localhost/testdb'; //'mongodb://art606:Polymorphysm1@ds035623.mongolab.com:35623/ionicapp';
 
 mongoose.connect(dbURI);
 mongoose.connection.on('connected', function () {

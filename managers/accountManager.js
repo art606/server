@@ -1,9 +1,8 @@
 var mongoose = require('mongoose');
 var passwordHash = require('password-hash');
 var schema = new mongoose.Schema({
-    username: String,
-    password: String,
     emailAddress: String,
+    password: String,
     firstName: String,
     lastName: String,
     properties: {},
@@ -14,16 +13,17 @@ var schema = new mongoose.Schema({
 var model = mongoose.model('Account', schema, 'account');
 
 clearPassword = function (storedAccount) {
-    var hashedpassword = passwordHash.generate(storedAccount.password);
-    storedAccount.password = hashedpassword;
+    if(storedAccount !=null) {
+        var hashedpassword = passwordHash.generate(storedAccount.password);
+        storedAccount.password = hashedpassword;
+    }
     return storedAccount;
 }
 
 convertToUser = function(storedAccount){
     var userToReturn ={
-        username: storedAccount.username,
-        password: storedAccount.password,
         emailAddress: storedAccount.emailAddress,
+        password: storedAccount.password,
         firstName: storedAccount.firstName,
         lastName: storedAccount.lastName
     }
@@ -36,8 +36,8 @@ var manager = {
         });
     },
 
-    checkCredentials: function (username, password, callback) {
-        model.findOne({'username': username, 'password': password}, function (err, storedAccount) {
+    checkCredentials: function (emailAddress, password, callback) {
+        model.findOne({'emailAddress': emailAddress, 'password': password}, function (err, storedAccount) {
             if (storedAccount == null  || storedAccount == undefined) {
                 callback(false);
             }
@@ -47,9 +47,9 @@ var manager = {
 
         })
     },
-    isUsernameAvailable: function (username, callback) {
-        model.findOne({'username': username}, function (err, storedAccount) {
-            if (storedAccount === null || storedAccount === undefined) {
+    isEmailAddressAvailable: function (emailAddress, callback) {
+        model.findOne({'emailAddress': emailAddress,}, function (err, storedAccount) {
+            if (storedAccount === null || storedAccount === undefined){
                 callback(true);
             }
             else {
@@ -57,8 +57,10 @@ var manager = {
             }
         })
     },
-    getUserByUsername: function (username, callback) {
-        model.findOne({'username': username}, function (err, storedAccount) {
+
+    getUserByEmailAddress: function (emailAddress, callback) {
+        model.findOne({'emailAddress': emailAddress}, function (err, storedAccount) {
+            console.log(storedAccount)
             callback(err, convertToUser(storedAccount));
         });
     },
@@ -69,23 +71,22 @@ var manager = {
         });
     },
 
-    updateAccount: function (username, account, callback) {
+    updateAccount: function (emailAddress, account, callback) {
         //TODO//
-        model.findOneAndUpdate({'username': username}, account, {new: true}, callback);
+        model.findOneAndUpdate({'emailAddress': emailAddress}, account, {new: true}, callback);
     },
-    getAccount: function (username, callback) {
-        model.findOne({'username': username}, function (err, storedAccount) {
+    getAccount: function (emailAddress, callback) {
+        model.findOne({'emailAddress': emailAddress}, function (err, storedAccount) {
             callback(err, clearPassword(storedAccount));
         });
     },
 
 
-    changePassword: function (username, password, newpassword, callback) {
+    changePassword: function (emailAddress, password, newpassword, callback) {
         //TODO Pobranie konta dla username/password
-        var foundAccount = model.findOne({'username': username, 'password': password}, function (err, storedAccount) {
+        var foundAccount = model.findOne({'username': emailAddress, 'password': password}, function (err, storedAccount) {
             return storedAccount;
         })
-        console.log("in acc manager, found account for username and password", foundAccount)
         model.findOneAndUpdate({'_id': foundAccount._id}, {'password': newpassword}, {new: true}, callback);
     }
 }
